@@ -1,250 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journal Platform</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little Date?</title>
+<style>
+  :root { --pink:#ff6f9f; --deep:#d83f78; --cream:#fff8fb; --ink:#4b2b3a; }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; min-height:100vh; display:grid; place-items:center; padding:24px;
+    font-family: "Trebuchet MS", Arial, sans-serif; color:var(--ink);
+    background: radial-gradient(circle at top left,#ffe1ec 0,transparent 38%),
+                radial-gradient(circle at bottom right,#ffd8e8 0,transparent 36%), var(--cream);
+  }
+  .card {
+    width:min(100%, 560px); background:rgba(255,255,255,.92); border:1px solid #ffd0e0;
+    border-radius:28px; padding:clamp(24px,5vw,42px); text-align:center;
+    box-shadow:0 18px 55px rgba(190,65,116,.13); position:relative; overflow:hidden;
+  }
+  .heart { font-size:42px; margin-bottom:8px; animation: pulse 1.8s infinite; }
+  @keyframes pulse { 50% { transform:scale(1.12); } }
+  h1 { font-size:clamp(1.8rem,5vw,2.5rem); line-height:1.15; margin:8px 0 12px; }
+  p { line-height:1.6; color:#80596a; }
+  .buttons { display:flex; justify-content:center; align-items:center; gap:16px; flex-wrap:wrap; margin-top:28px; min-height:58px; }
+  button {
+    border:0; border-radius:999px; padding:14px 28px; font-weight:700; font-size:1rem;
+    cursor:pointer; transition:transform .18s, box-shadow .18s; font-family:inherit;
+  }
+  button:focus-visible, input:focus-visible, textarea:focus-visible { outline:3px solid #f5a3c2; outline-offset:3px; }
+  .yes { color:white; background:linear-gradient(135deg,var(--pink),var(--deep)); box-shadow:0 8px 18px #e75e913b; }
+  .yes:hover { transform:translateY(-2px); box-shadow:0 12px 22px #e75e9145; }
+  .no { color:#9d5270; background:#ffe5ee; border:1px solid #ffc8da; }
+  .hidden { display:none !important; }
+  .form-screen { text-align:left; }
+  .form-screen .intro { text-align:center; }
+  .form-screen h1 { text-align:center; }
+  .form-screen .heart { text-align:center; }
+  form { margin-top:24px; display:grid; gap:16px; }
+  label { display:block; font-size:.93rem; font-weight:700; margin-bottom:7px; color:#704357; }
+  input, textarea {
+    width:100%; padding:13px 14px; border-radius:13px; border:1px solid #f0c3d3;
+    background:#fffafd; color:var(--ink); font:inherit;
+  }
+  textarea { min-height:92px; resize:vertical; }
+  .hint { font-size:.82rem; font-weight:400; color:#a07889; }
+  .submit-row { text-align:center; margin-top:4px; }
+  .submit-row button { width:100%; }
+  .back { margin-top:12px; background:transparent; color:#a15d78; padding:10px 16px; }
+  .success { text-align:center; }
+  .summary { text-align:left; background:#fff4f8; border:1px solid #ffd5e3; border-radius:16px; padding:16px; margin:20px 0; }
+  .summary p { margin:8px 0; overflow-wrap:anywhere; }
+  .tiny { font-size:.8rem; color:#a07889; margin-top:18px; }
+  @media (max-width:420px) { .card { padding:24px 18px; } .buttons { gap:10px; } }
+</style>
 </head>
-
 <body>
-
-    <div class="pic">
-        <video autoplay muted loop>
-            <source src="vid.mp4" type="video/mp4">
-        </video>
+<main class="card">
+  <section id="question">
+    <div class="heart" aria-hidden="true">💗</div>
+    <h1>Will you go on a date with me?</h1>
+    <p>I have one little question for you… and I’m hoping for one very specific answer. 🥹</p>
+    <div class="buttons" id="buttonArea">
+      <button class="yes" id="yesButton" type="button">YES! 💕</button>
+      <button class="no" id="noButton" type="button">No 🙈</button>
     </div>
-    <header>
-        <h1> My Personal Journal Platform </h1>
-    </header>
+    <p class="tiny">Choose wisely… just kidding. 💌</p>
+  </section>
 
-    <div class="tabs">
-        <button class="tab" onclick="toggleUploadForm()" id="createBtn"><i class="fas fa-plus"></i></button>
-        <button class="tab active" onclick="showTab('all')">All Journals</button>
-        <button class="tab" onclick="showTab('deleted')">Recently Deleted</button>
-    </div>
+  <section id="details" class="form-screen hidden">
+    <div class="heart" aria-hidden="true">🌷</div>
+    <h1>It's a date! 💖</h1>
+    <p class="intro">Okay, let's plan our little date. Fill in the details below.</p>
+    <form id="dateForm">
+      <div>
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" placeholder="What should I call you?" required maxlength="80">
+      </div>
+      <div>
+        <label for="location">Specific location</label>
+        <input id="location" name="location" type="text" placeholder="Restaurant, café, park, etc." required maxlength="180">
+      </div>
+      <div>
+        <label for="meeting">Meeting point <span class="hint">(optional)</span></label>
+        <input id="meeting" name="meeting" type="text" placeholder="Where should we meet first?" maxlength="180">
+      </div>
+      <div>
+        <label for="notes">Extra notes <span class="hint">(optional)</span></label>
+        <textarea id="notes" name="notes" placeholder="Anything I should know? Food preferences, plans, or little details…" maxlength="1000"></textarea>
+      </div>
+      <div>
+        <label for="date">Date</label>
+        <input id="date" name="date" type="date" required>
+      </div>
+      <div>
+        <label for="time">Time</label>
+        <input id="time" name="time" type="time" required>
+      </div>
+      <div class="submit-row"><button class="yes" type="submit">Confirm our date 💌</button></div>
+    </form>
+    <div style="text-align:center"><button class="back" id="backButton" type="button">← Go back</button></div>
+    <p class="tiny" style="text-align:center">Your answers stay in this page. Nothing is sent automatically.</p>
+  </section>
 
-    <div class="search-bar" id="searchBar">
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search journals title..." onkeyup="filterStories()">
-            <i class="fas fa-search"></i>
-        </div>
-    </div>
-    <div class="upload-form" id="uploadForm">
-        <div class="book">
-            <div class="page left">
-                <h2><i class="fas fa-upload"></i> Upload a Journal</h2>
-                <input type="text" id="title" placeholder="Enter Your Journal Title" required>
-            </div>
-            <div class="page right">
-                <textarea id="content" placeholder="Enter Your Journal Content" rows="10" required></textarea>
-                <button onclick="uploadStory()"><i class="fas fa-plus"></i> Upload</button>
-            </div>
-        </div>
-    </div>
+  <section id="success" class="success hidden">
+    <div class="heart" aria-hidden="true">💞</div>
+    <h1>It's officially a date!</h1>
+    <p>I'm already looking forward to it. Here's our plan:</p>
+    <div id="summary" class="summary"></div>
+    <button class="yes" id="editButton" type="button">Edit details ✨</button>
+    <p class="tiny">This page doesn't send or save your details online. You can take a screenshot of this plan.</p>
+  </section>
+</main>
+<script>
+  const question = document.getElementById('question');
+  const details = document.getElementById('details');
+  const success = document.getElementById('success');
+  const noButton = document.getElementById('noButton');
+  const buttonArea = document.getElementById('buttonArea');
+  const yesButton = document.getElementById('yesButton');
+  const form = document.getElementById('dateForm');
+  let dodgeCount = 0;
 
-    <div class="story-list" id="storyList">
-    </div>
+  function show(section) {
+    [question, details, success].forEach(s => s.classList.add('hidden'));
+    section.classList.remove('hidden');
+  }
+  yesButton.addEventListener('click', () => show(details));
+  document.getElementById('backButton').addEventListener('click', () => show(question));
+  document.getElementById('editButton').addEventListener('click', () => show(details));
 
-    <div class="history-list" id="deletedList">
-    </div>
+  function dodge() {
+    dodgeCount++;
+    const maxX = Math.max(0, window.innerWidth - noButton.offsetWidth - 24);
+    const maxY = Math.max(0, window.innerHeight - noButton.offsetHeight - 24);
+    noButton.style.position = 'fixed';
+    noButton.style.left = (12 + Math.random() * maxX) + 'px';
+    noButton.style.top = (12 + Math.random() * maxY) + 'px';
+    noButton.style.zIndex = '10';
+    const messages = ['Hehe, try again 🙈', 'Oops, too slow! 💨', 'Are you sure? 🥺', 'Nope, catch me! 💗'];
+    noButton.textContent = messages[(dodgeCount - 1) % messages.length];
+  }
+  noButton.addEventListener('pointerenter', dodge);
+  noButton.addEventListener('pointerdown', (event) => { event.preventDefault(); dodge(); });
+  noButton.addEventListener('click', (event) => { event.preventDefault(); dodge(); });
 
-    <div class="reader" id="reader">
-        <div class="reader-content">
-            <span class="close" onclick="closeReader()">&times;</span>
-            <h2 id="readerTitle"></h2>
-            <p id="readerContent"></p>
-        </div>
-    </div>
+  // Set the earliest date to today, using the visitor's local date.
+  const dateInput = document.getElementById('date');
+  const now = new Date();
+  const localToday = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  dateInput.min = localToday;
 
-    <div class="notification" id="notification"></div>
-
-    <script>
-        let stories = JSON.parse(localStorage.getItem('stories')) || [];
-        let deletedStories = JSON.parse(localStorage.getItem('deletedStories')) || [];
-
-        function cleanDeletedStories() {
-            const now = new Date();
-            const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-            deletedStories = deletedStories.filter(story => {
-                const storyDate = new Date(story.date);
-                return storyDate > thirtyDaysAgo;
-            });
-            localStorage.setItem('deletedStories', JSON.stringify(deletedStories));
-        }
-
-        function renderStories(filteredStories = stories) {
-            const list = document.getElementById('storyList');
-            list.innerHTML = '';
-            filteredStories.forEach((story, index) => {
-                const card = document.createElement('div');
-                card.className = 'story-card';
-                card.style.setProperty('--i', index);
-                const wordCount = story.content.split(' ').length;
-                const date = new Date(story.date).toLocaleDateString();
-                card.innerHTML = `
-                    <div class="story-meta">
-                        <span class="story-date">${date}</span>
-                        <span class="story-word-count">${wordCount} words</span>
-                    </div>
-                    <h3><i class="fas fa-book"></i> ${story.title}</h3>
-                    <p>${story.content.substring(0, 100)}...</p>
-                    <div class="story-actions">
-                        <button class="delete-btn" onclick="deleteStory(${index})"><i class="fas fa-trash"></i></button>
-                    </div>
-                `;
-                card.onclick = (e) => {
-                    if (!e.target.closest('.delete-btn')) openReader(story);
-                };
-                list.appendChild(card);
-            });
-        }
-
-        function renderHistory() {
-            cleanDeletedStories();
-            const list = document.getElementById('deletedList');
-            list.innerHTML = '';
-            deletedStories.forEach((story, index) => {
-                const card = document.createElement('div');
-                card.className = 'history-card';
-                const wordCount = story.content.split(' ').length;
-                const date = new Date(story.date).toLocaleDateString();
-                const now = new Date();
-                const storyDate = new Date(story.date);
-                const daysDiff = Math.floor((now - storyDate) / (1000 * 60 * 60 * 24));
-                card.innerHTML = `
-                    <div class="story-meta">
-                        <span class="story-date">${date}</span>
-                        <span class="story-word-count">${wordCount} words</span>
-                    </div>
-                    <h3><i class="fas fa-book"></i> ${story.title}</h3>
-                    <p>${story.content.substring(0, 100)}...</p>
-                    <div class="deleted-actions">
-                        <button class="restore-btn" onclick="restoreStory(${index})"><i class="fas fa-undo"></i> Recover</button>
-                        <button class="perm-delete-btn" onclick="permDeleteStory(${index})"><i class="fas fa-trash-alt"></i> Delete</button>
-                    </div>
-                `;
-                card.onclick = (e) => {
-                    if (!e.target.closest('.restore-btn') && !e.target.closest('.perm-delete-btn')) openReader(story);
-                };
-                list.appendChild(card);
-            });
-        }
-
-        function deleteStory(index) {
-            const story = stories.splice(index, 1)[0];
-            deletedStories.push(story);
-            localStorage.setItem('stories', JSON.stringify(stories));
-            localStorage.setItem('deletedStories', JSON.stringify(deletedStories));
-            renderStories();
-            renderHistory();
-            showNotification('Journal deleted successfully!');
-        }
-
-        function restoreStory(index) {
-            const story = deletedStories.splice(index, 1)[0];
-            stories.push(story);
-            localStorage.setItem('stories', JSON.stringify(stories));
-            localStorage.setItem('deletedStories', JSON.stringify(deletedStories));
-            renderStories();
-            renderHistory();
-            showNotification('Journal recovered successfully!');
-        }
-
-        function permDeleteStory(index) {
-            deletedStories.splice(index, 1);
-            localStorage.setItem('deletedStories', JSON.stringify(deletedStories));
-            renderHistory();
-            showNotification('Journal deleted permanently!');
-        }
-
-        function showTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            const tabIndex = tab === 'all' ? 2 : tab === 'deleted' ? 3 : 1;
-            document.querySelector(`.tab:nth-child(${tabIndex})`).classList.add('active');
-            const storyList = document.getElementById('storyList');
-            const searchBar = document.getElementById('searchBar');
-            const uploadForm = document.getElementById('uploadForm');
-            const deletedList = document.getElementById('deletedList');
-            if (tab === 'deleted') {
-                storyList.classList.add('hidden');
-                searchBar.classList.add('hidden');
-                uploadForm.classList.add('hidden');
-                deletedList.classList.add('show');
-                renderHistory();
-            } else if (tab === 'create') {
-                storyList.classList.add('hidden');
-                searchBar.classList.add('hidden');
-                uploadForm.classList.remove('hidden');
-                deletedList.classList.remove('show');
-            } else {
-                storyList.classList.remove('hidden');
-                searchBar.classList.remove('hidden');
-                uploadForm.classList.add('hidden');
-                deletedList.classList.remove('show');
-                renderStories();
-            }
-        }
-
-        function toggleUploadForm() {
-            showTab('create');
-        }
-
-        function filterStories() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = stories.filter(story => story.title.toLowerCase().includes(query));
-            renderStories(filtered);
-        }
-
-        function uploadStory() {
-            const title = document.getElementById('title').value;
-            const content = document.getElementById('content').value;
-            if (title && content) {
-                const date = new Date().toISOString();
-                stories.push({ title, content, date });
-                localStorage.setItem('stories', JSON.stringify(stories));
-                renderStories();
-                const storyList = document.getElementById('storyList');
-                const lastCard = storyList.lastElementChild;
-                if (lastCard) {
-                    lastCard.classList.add('new-upload');
-                }
-                document.getElementById('title').value = '';
-                document.getElementById('content').value = '';
-                document.getElementById('searchInput').value = '';
-                document.getElementById('uploadForm').classList.add('hidden');
-                showTab('all');
-                showNotification('Journal uploaded successfully!');
-            }
-        }
-
-        function openReader(story) {
-            document.getElementById('readerTitle').textContent = story.title;
-            document.getElementById('readerContent').textContent = story.content;
-            document.getElementById('reader').classList.add('show');
-        }
-
-        function closeReader() {
-            document.getElementById('reader').classList.remove('show');
-        }
-
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-                notification.classList.add('hide');
-                setTimeout(() => {
-                    notification.classList.remove('hide');
-                }, 300);
-            }, 3000);
-        }
-
-        renderStories();
-    </script>
+  function escapeHtml(value) {
+    return value.replace(/[&<>"']/g, ch => ({
+      '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+    }[ch]));
+  }
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const data = new FormData(form);
+    const name = data.get('name').trim();
+    const location = data.get('location').trim();
+    const meeting = data.get('meeting').trim();
+    const notes = data.get('notes').trim();
+    const date = data.get('date');
+    const time = data.get('time');
+    const prettyDate = new Date(date + 'T12:00:00').toLocaleDateString(undefined, {
+      weekday:'long', year:'numeric', month:'long', day:'numeric'
+    });
+    const prettyTime = new Date('2000-01-01T' + time).toLocaleTimeString(undefined, {
+      hour:'numeric', minute:'2-digit'
+    });
+    document.getElementById('summary').innerHTML =
+      `<p><strong>Name:</strong> ${escapeHtml(name)}</p>` +
+      `<p><strong>Location:</strong> ${escapeHtml(location)}</p>` +
+      (meeting ? `<p><strong>Meeting point:</strong> ${escapeHtml(meeting)}</p>` : '') +
+      `<p><strong>Date:</strong> ${escapeHtml(prettyDate)}</p>` +
+      `<p><strong>Time:</strong> ${escapeHtml(prettyTime)}</p>` +
+      (notes ? `<p><strong>Extra notes:</strong> ${escapeHtml(notes).replace(/\n/g, '<br>')}</p>` : '');
+    show(success);
+  });
+</script>
 </body>
-
 </html>
