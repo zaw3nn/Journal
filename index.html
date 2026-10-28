@@ -1,250 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journal Platform</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff4f7">
+  <title>A Little Date Invite</title>
+  <style>
+    :root { --pink:#ff4f83; --pink2:#ff7ca1; --ink:#263247; --muted:#69778b; --paper:#fffafb; --line:#f4dce4; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font-family: "Segoe UI", system-ui, -apple-system, sans-serif; color:var(--ink);
+      background: radial-gradient(circle at 15% 10%, #ffe3ed 0, transparent 34%), linear-gradient(135deg,#fff9fb,#fff0f5); }
+    button,input,select,textarea { font:inherit; }
+    button { cursor:pointer; }
+    .topbar { max-width:1000px; margin:auto; padding:22px 22px 10px; display:flex; align-items:center; justify-content:space-between; }
+    .brand { display:flex; align-items:center; gap:9px; font-weight:800; letter-spacing:-.3px; }
+    .heart { color:var(--pink); font-size:25px; line-height:1; }
+    .tiny { color:var(--muted); font-size:13px; }
+    .shell { width:min(760px, calc(100% - 28px)); margin:24px auto 48px; }
+    .card { background:rgba(255,255,255,.88); border:1px solid #fff; box-shadow:0 18px 55px rgba(173,73,109,.12); border-radius:28px; padding:clamp(22px,5vw,46px); }
+    .center { text-align:center; }
+    .eyebrow { text-transform:uppercase; letter-spacing:2px; color:var(--pink); font-size:12px; font-weight:800; }
+    h1 { font-size:clamp(32px,6vw,52px); line-height:1.12; letter-spacing:-1.8px; margin:15px 0; }
+    h2 { font-size:clamp(25px,4vw,34px); letter-spacing:-.8px; margin:8px 0 10px; }
+    p { line-height:1.65; color:var(--muted); }
+    .hero-heart { font-size:55px; filter:drop-shadow(0 7px 12px #ffc4d6); animation:beat 1.4s infinite; }
+    @keyframes beat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
+    .btn { border:0; border-radius:13px; padding:13px 22px; font-weight:750; transition:transform .18s, box-shadow .18s; }
+    .btn:hover { transform:translateY(-2px); }
+    .primary { background:linear-gradient(135deg,var(--pink),#f63e79); color:white; box-shadow:0 9px 20px rgba(255,79,131,.24); }
+    .secondary { background:#fff; color:var(--ink); border:1px solid var(--line); }
+    .actions { display:flex; justify-content:center; align-items:center; gap:18px; min-height:60px; margin:22px 0 6px; position:relative; }
+    #noBtn { position:relative; }
+    .note { font-size:12px; margin-top:12px; }
+    .progress { display:flex; gap:8px; margin:0 0 28px; }
+    .step-pill { flex:1; border-radius:12px; padding:10px 6px; background:#fff2f6; color:#9a8790; font-size:12px; text-align:center; font-weight:700; }
+    .step-pill.active { background:#ffe0e9; color:#e9336c; }
+    .step-pill.done { background:#ff4f83; color:#fff; }
+    .step-content { animation:appear .25s ease; }
+    @keyframes appear { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:24px; }
+    .field { display:flex; flex-direction:column; gap:8px; text-align:left; }
+    .field.full { grid-column:1/-1; }
+    label { font-size:13px; font-weight:750; }
+    input,select,textarea { width:100%; border:1px solid #e8dfe3; border-radius:12px; padding:13px 14px; background:#fff; color:var(--ink); outline:none; }
+    input:focus,select:focus,textarea:focus { border-color:var(--pink2); box-shadow:0 0 0 3px #ff4f831a; }
+    textarea { min-height:110px; resize:vertical; }
+    .hint { font-size:12px; color:#8b95a4; margin-top:-3px; }
+    .nav-buttons { display:flex; justify-content:space-between; gap:12px; margin-top:26px; }
+    .nav-buttons .btn { min-width:115px; }
+    .location-options { display:grid; gap:10px; margin-top:20px; }
+    .location-option { display:flex; align-items:center; gap:12px; border:1px solid var(--line); border-radius:14px; padding:14px; cursor:pointer; background:#fff; }
+    .location-option:has(input:checked) { border-color:var(--pink); background:#fff5f8; }
+    .location-option input { width:auto; accent-color:var(--pink); }
+    .location-option span { display:block; }
+    .location-option small { color:var(--muted); }
+    .summary { border:1px solid var(--line); border-radius:16px; overflow:hidden; margin-top:22px; text-align:left; }
+    .summary-row { display:grid; grid-template-columns:125px 1fr; gap:12px; padding:13px 16px; border-bottom:1px solid #f6e8ed; }
+    .summary-row:last-child { border-bottom:0; }
+    .summary-row strong { font-size:13px; }
+    .summary-row span { color:var(--muted); font-size:14px; overflow-wrap:anywhere; white-space:pre-wrap; }
+    .success-icon { font-size:56px; color:var(--pink); }
+    .footer { text-align:center; color:#9b8b92; font-size:12px; padding:18px 10px 0; }
+    .hidden { display:none !important; }
+    .toast { margin-top:14px; color:#c3285b; font-size:13px; min-height:18px; }
+    @media(max-width:560px) { .shell{margin-top:14px}.card{border-radius:22px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.progress{gap:5px}.step-pill{font-size:10px;padding:9px 2px}.summary-row{grid-template-columns:95px 1fr}.nav-buttons .btn{min-width:0;flex:1}.topbar{padding-top:16px} }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after{animation:none !important;transition:none !important} }
+  </style>
 </head>
-
 <body>
+  <header class="topbar">
+    <div class="brand"><span class="heart">♥</span> Date Invite</div>
+    <div class="tiny">made with a little courage</div>
+  </header>
 
-    <div class="pic">
-        <video autoplay muted loop>
-            <source src="vid.mp4" type="video/mp4">
-        </video>
-    </div>
-    <header>
-        <h1> My Personal Journal Platform </h1>
-    </header>
+  <main class="shell">
+    <section class="card center" id="welcome">
+      <div class="hero-heart">♥</div>
+      <div class="eyebrow">A tiny question for you</div>
+      <h1>Hey, you...</h1>
+      <p>I have something special to ask.<br>Would you go on a date with me?</p>
+      <div class="actions">
+        <button class="btn primary" id="startBtn">YES, LET'S GO ♥</button>
+        <button class="btn secondary" id="noBtn" aria-label="No">NO</button>
+      </div>
+      <p class="note">Psst... the NO button is a little shy.</p>
+    </section>
 
-    <div class="tabs">
-        <button class="tab" onclick="toggleUploadForm()" id="createBtn"><i class="fas fa-plus"></i></button>
-        <button class="tab active" onclick="showTab('all')">All Journals</button>
-        <button class="tab" onclick="showTab('deleted')">Recently Deleted</button>
-    </div>
+    <section class="card hidden" id="wizard">
+      <div class="progress" aria-label="Form progress">
+        <div class="step-pill active" data-pill="0">1 · About you</div>
+        <div class="step-pill" data-pill="1">2 · Where</div>
+        <div class="step-pill" data-pill="2">3 · When</div>
+        <div class="step-pill" data-pill="3">4 · Details</div>
+        <div class="step-pill" data-pill="4">5 · Review</div>
+      </div>
 
-    <div class="search-bar" id="searchBar">
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search journals title..." onkeyup="filterStories()">
-            <i class="fas fa-search"></i>
+      <div class="step-content" data-step="0">
+        <div class="center"><div class="eyebrow">Step one</div><h2>Let's make it your kind of date</h2><p>Tell me a little about yourself so I can plan something nice.</p></div>
+        <div class="form-grid">
+          <div class="field"><label for="herName">What should I call you?</label><input id="herName" placeholder="Your name or nickname" autocomplete="name"></div>
+          <div class="field"><label for="dateMood">Date vibe</label><select id="dateMood"><option value="">Choose a vibe</option><option>Chill and cozy</option><option>Fun and adventurous</option><option>Romantic dinner</option><option>Coffee and conversation</option><option>Surprise me</option></select></div>
+          <div class="field full"><label for="interests">Things you like</label><input id="interests" placeholder="e.g. coffee, movies, beaches, books"></div>
         </div>
-    </div>
-    <div class="upload-form" id="uploadForm">
-        <div class="book">
-            <div class="page left">
-                <h2><i class="fas fa-upload"></i> Upload a Journal</h2>
-                <input type="text" id="title" placeholder="Enter Your Journal Title" required>
-            </div>
-            <div class="page right">
-                <textarea id="content" placeholder="Enter Your Journal Content" rows="10" required></textarea>
-                <button onclick="uploadStory()"><i class="fas fa-plus"></i> Upload</button>
-            </div>
+      </div>
+
+      <div class="step-content hidden" data-step="1">
+        <div class="center"><div class="eyebrow">Step two</div><h2>Where should we go?</h2><p>Pick a suggestion or enter your own place.</p></div>
+        <div class="location-options">
+          <label class="location-option"><input type="radio" name="placeChoice" value="Coffee shop"><span><strong>A cozy coffee shop</strong><br><small>Coffee, snacks, and good conversation</small></span></label>
+          <label class="location-option"><input type="radio" name="placeChoice" value="Restaurant or dinner spot"><span><strong>A restaurant</strong><br><small>A meal together, just the two of us</small></span></label>
+          <label class="location-option"><input type="radio" name="placeChoice" value="Park or beach"><span><strong>A park or beach</strong><br><small>Fresh air and a relaxed walk</small></span></label>
+          <label class="location-option"><input type="radio" name="placeChoice" value="Movie date"><span><strong>A movie date</strong><br><small>Popcorn is part of the plan</small></span></label>
         </div>
-    </div>
-
-    <div class="story-list" id="storyList">
-    </div>
-
-    <div class="history-list" id="deletedList">
-    </div>
-
-    <div class="reader" id="reader">
-        <div class="reader-content">
-            <span class="close" onclick="closeReader()">&times;</span>
-            <h2 id="readerTitle"></h2>
-            <p id="readerContent"></p>
+        <div class="form-grid">
+          <div class="field full"><label for="customPlace">Specific location / address</label><input id="customPlace" placeholder="Place name, area, or address"></div>
+          <div class="field full"><label for="meetup">Meeting point (optional)</label><input id="meetup" placeholder="e.g. outside the café"></div>
         </div>
-    </div>
+      </div>
 
-    <div class="notification" id="notification"></div>
+      <div class="step-content hidden" data-step="2">
+        <div class="center"><div class="eyebrow">Step three</div><h2>When are you free?</h2><p>Choose a date and time that works for you.</p></div>
+        <div class="form-grid">
+          <div class="field"><label for="date">Date</label><input id="date" type="date"></div>
+          <div class="field"><label for="time">Time</label><input id="time" type="time"></div>
+          <div class="field full"><label for="duration">How long should our date be?</label><select id="duration"><option>1–2 hours</option><option>2–3 hours</option><option>Half a day</option><option>Let's see where it goes</option></select></div>
+        </div>
+      </div>
 
-    <script>
-        let stories = JSON.parse(localStorage.getItem('stories')) || [];
-        let deletedStories = JSON.parse(localStorage.getItem('deletedStories')) || [];
+      <div class="step-content hidden" data-step="3">
+        <div class="center"><div class="eyebrow">Step four</div><h2>Anything else?</h2><p>Any preferences, food allergies, or little details I should know?</p></div>
+        <div class="form-grid">
+          <div class="field"><label for="food">Food / drink preferences</label><input id="food" placeholder="e.g. no spicy food"></div>
+          <div class="field"><label for="budget">Budget style</label><select id="budget"><option value="">No preference</option><option>Simple and affordable</option><option>Moderate</option><option>A special treat</option><option>Let's decide together</option></select></div>
+          <div class="field full"><label for="notes">Extra notes</label><textarea id="notes" placeholder="Anything else you'd like to share..."></textarea><div class="hint">Share only what you're comfortable sharing.</div></div>
+        </div>
+      </div>
 
-        function cleanDeletedStories() {
-            const now = new Date();
-            const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-            deletedStories = deletedStories.filter(story => {
-                const storyDate = new Date(story.date);
-                return storyDate > thirtyDaysAgo;
-            });
-            localStorage.setItem('deletedStories', JSON.stringify(deletedStories));
-        }
+      <div class="step-content hidden" data-step="4">
+        <div class="center"><div class="eyebrow">One last thing</div><h2>Here's our date plan ♥</h2><p>Check the details before confirming.</p></div>
+        <div class="summary" id="summary"></div>
+        <p class="hint">This demo keeps the details in this page only. It does not send them to anyone or save them to a server.</p>
+      </div>
 
-        function renderStories(filteredStories = stories) {
-            const list = document.getElementById('storyList');
-            list.innerHTML = '';
-            filteredStories.forEach((story, index) => {
-                const card = document.createElement('div');
-                card.className = 'story-card';
-                card.style.setProperty('--i', index);
-                const wordCount = story.content.split(' ').length;
-                const date = new Date(story.date).toLocaleDateString();
-                card.innerHTML = `
-                    <div class="story-meta">
-                        <span class="story-date">${date}</span>
-                        <span class="story-word-count">${wordCount} words</span>
-                    </div>
-                    <h3><i class="fas fa-book"></i> ${story.title}</h3>
-                    <p>${story.content.substring(0, 100)}...</p>
-                    <div class="story-actions">
-                        <button class="delete-btn" onclick="deleteStory(${index})"><i class="fas fa-trash"></i></button>
-                    </div>
-                `;
-                card.onclick = (e) => {
-                    if (!e.target.closest('.delete-btn')) openReader(story);
-                };
-                list.appendChild(card);
-            });
-        }
+      <div class="nav-buttons">
+        <button class="btn secondary" id="backBtn">← Back</button>
+        <button class="btn primary" id="nextBtn">Next →</button>
+      </div>
+      <div class="toast" id="error" role="status" aria-live="polite"></div>
+    </section>
 
-        function renderHistory() {
-            cleanDeletedStories();
-            const list = document.getElementById('deletedList');
-            list.innerHTML = '';
-            deletedStories.forEach((story, index) => {
-                const card = document.createElement('div');
-                card.className = 'history-card';
-                const wordCount = story.content.split(' ').length;
-                const date = new Date(story.date).toLocaleDateString();
-                const now = new Date();
-                const storyDate = new Date(story.date);
-                const daysDiff = Math.floor((now - storyDate) / (1000 * 60 * 60 * 24));
-                card.innerHTML = `
-                    <div class="story-meta">
-                        <span class="story-date">${date}</span>
-                        <span class="story-word-count">${wordCount} words</span>
-                    </div>
-                    <h3><i class="fas fa-book"></i> ${story.title}</h3>
-                    <p>${story.content.substring(0, 100)}...</p>
-                    <div class="deleted-actions">
-                        <button class="restore-btn" onclick="restoreStory(${index})"><i class="fas fa-undo"></i> Recover</button>
-                        <button class="perm-delete-btn" onclick="permDeleteStory(${index})"><i class="fas fa-trash-alt"></i> Delete</button>
-                    </div>
-                `;
-                card.onclick = (e) => {
-                    if (!e.target.closest('.restore-btn') && !e.target.closest('.perm-delete-btn')) openReader(story);
-                };
-                list.appendChild(card);
-            });
-        }
+    <section class="card center hidden" id="finished">
+      <div class="success-icon">♥</div>
+      <div class="eyebrow">It's a date!</div>
+      <h1>Can't wait to see you<span id="endingName"></span>.</h1>
+      <p>Thank you for saying yes. We'll make it a lovely day.</p>
+      <div class="summary" id="finalSummary"></div>
+      <button class="btn primary" id="restartBtn" style="margin-top:24px">Back to the beginning</button>
+    </section>
+    <div class="footer">A little website for a big question.</div>
+  </main>
 
-        function deleteStory(index) {
-            const story = stories.splice(index, 1)[0];
-            deletedStories.push(story);
-            localStorage.setItem('stories', JSON.stringify(stories));
-            localStorage.setItem('deletedStories', JSON.stringify(deletedStories));
-            renderStories();
-            renderHistory();
-            showNotification('Journal deleted successfully!');
-        }
+  <script>
+    const $ = id => document.getElementById(id);
+    const welcome = $('welcome'), wizard = $('wizard'), finished = $('finished');
+    const noBtn = $('noBtn');
+    let step = 0;
+    const fields = {
+      'Name': () => $('herName').value.trim() || 'Not provided',
+      'Date vibe': () => $('dateMood').value || 'Not chosen',
+      'Things you like': () => $('interests').value.trim() || 'Not provided',
+      'Place idea': () => document.querySelector('input[name="placeChoice"]:checked')?.value || 'Open to ideas',
+      'Location': () => $('customPlace').value.trim() || 'To be decided together',
+      'Meeting point': () => $('meetup').value.trim() || 'Not specified',
+      'Date': () => $('date').value || 'Not chosen',
+      'Time': () => $('time').value ? new Date('2000-01-01T' + $('time').value).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}) : 'Not chosen',
+      'Duration': () => $('duration').value,
+      'Food / drink': () => $('food').value.trim() || 'No preference shared',
+      'Budget style': () => $('budget').value || 'No preference',
+      'Extra notes': () => $('notes').value.trim() || 'None'
+    };
+    // Set the earliest selectable date to today.
+    const today = new Date();
+    $('date').min = new Date(today.getTime() - today.getTimezoneOffset()*60000).toISOString().slice(0,10);
 
-        function restoreStory(index) {
-            const story = deletedStories.splice(index, 1)[0];
-            stories.push(story);
-            localStorage.setItem('stories', JSON.stringify(stories));
-            localStorage.setItem('deletedStories', JSON.stringify(deletedStories));
-            renderStories();
-            renderHistory();
-            showNotification('Journal recovered successfully!');
-        }
+    $('startBtn').addEventListener('click', () => { welcome.classList.add('hidden'); wizard.classList.remove('hidden'); showStep(0); });
+    function dodge() {
+      const parent = noBtn.parentElement;
+      const maxX = Math.max(0, parent.clientWidth - noBtn.offsetWidth);
+      const maxY = 95;
+      noBtn.style.position = 'absolute';
+      noBtn.style.left = Math.random() * maxX + 'px';
+      noBtn.style.top = (Math.random() * maxY - 25) + 'px';
+      noBtn.style.transform = 'rotate(' + (Math.random()*16-8) + 'deg)';
+    }
+    noBtn.addEventListener('pointerenter', dodge);
+    noBtn.addEventListener('pointerdown', e => { e.preventDefault(); dodge(); });
+    noBtn.addEventListener('focus', dodge);
+    noBtn.addEventListener('click', e => { e.preventDefault(); dodge(); });
+    // On touch screens, a tap also makes the button move away.
+    noBtn.addEventListener('touchstart', e => { e.preventDefault(); dodge(); }, {passive:false});
 
-        function permDeleteStory(index) {
-            deletedStories.splice(index, 1);
-            localStorage.setItem('deletedStories', JSON.stringify(deletedStories));
-            renderHistory();
-            showNotification('Journal deleted permanently!');
-        }
-
-        function showTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            const tabIndex = tab === 'all' ? 2 : tab === 'deleted' ? 3 : 1;
-            document.querySelector(`.tab:nth-child(${tabIndex})`).classList.add('active');
-            const storyList = document.getElementById('storyList');
-            const searchBar = document.getElementById('searchBar');
-            const uploadForm = document.getElementById('uploadForm');
-            const deletedList = document.getElementById('deletedList');
-            if (tab === 'deleted') {
-                storyList.classList.add('hidden');
-                searchBar.classList.add('hidden');
-                uploadForm.classList.add('hidden');
-                deletedList.classList.add('show');
-                renderHistory();
-            } else if (tab === 'create') {
-                storyList.classList.add('hidden');
-                searchBar.classList.add('hidden');
-                uploadForm.classList.remove('hidden');
-                deletedList.classList.remove('show');
-            } else {
-                storyList.classList.remove('hidden');
-                searchBar.classList.remove('hidden');
-                uploadForm.classList.add('hidden');
-                deletedList.classList.remove('show');
-                renderStories();
-            }
-        }
-
-        function toggleUploadForm() {
-            showTab('create');
-        }
-
-        function filterStories() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = stories.filter(story => story.title.toLowerCase().includes(query));
-            renderStories(filtered);
-        }
-
-        function uploadStory() {
-            const title = document.getElementById('title').value;
-            const content = document.getElementById('content').value;
-            if (title && content) {
-                const date = new Date().toISOString();
-                stories.push({ title, content, date });
-                localStorage.setItem('stories', JSON.stringify(stories));
-                renderStories();
-                const storyList = document.getElementById('storyList');
-                const lastCard = storyList.lastElementChild;
-                if (lastCard) {
-                    lastCard.classList.add('new-upload');
-                }
-                document.getElementById('title').value = '';
-                document.getElementById('content').value = '';
-                document.getElementById('searchInput').value = '';
-                document.getElementById('uploadForm').classList.add('hidden');
-                showTab('all');
-                showNotification('Journal uploaded successfully!');
-            }
-        }
-
-        function openReader(story) {
-            document.getElementById('readerTitle').textContent = story.title;
-            document.getElementById('readerContent').textContent = story.content;
-            document.getElementById('reader').classList.add('show');
-        }
-
-        function closeReader() {
-            document.getElementById('reader').classList.remove('show');
-        }
-
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-                notification.classList.add('hide');
-                setTimeout(() => {
-                    notification.classList.remove('hide');
-                }, 300);
-            }, 3000);
-        }
-
-        renderStories();
-    </script>
+    function showStep(n) {
+      step = n;
+      document.querySelectorAll('[data-step]').forEach(el => el.classList.toggle('hidden', Number(el.dataset.step) !== step));
+      document.querySelectorAll('[data-pill]').forEach(el => {
+        const i = Number(el.dataset.pill);
+        el.classList.toggle('active', i === step);
+        el.classList.toggle('done', i < step);
+      });
+      $('backBtn').classList.toggle('hidden', step === 0);
+      $('nextBtn').textContent = step === 4 ? 'Yes, confirm ♥' : 'Next →';
+      $('error').textContent = '';
+      if (step === 4) renderSummary($('summary'));
+      wizard.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+    function renderSummary(target) {
+      target.innerHTML = '';
+      Object.entries(fields).forEach(([label, getValue]) => {
+        const row = document.createElement('div'); row.className = 'summary-row';
+        const strong = document.createElement('strong'); strong.textContent = label;
+        const value = document.createElement('span'); value.textContent = getValue();
+        row.append(strong, value); target.append(row);
+      });
+    }
+    function validateCurrent() {
+      if (step === 0 && !$('herName').value.trim()) return 'Please tell me your name or nickname first.';
+      if (step === 1 && !$('customPlace').value.trim() && !document.querySelector('input[name="placeChoice"]:checked')) return 'Choose a place idea or enter a location.';
+      if (step === 2 && (!$('date').value || !$('time').value)) return 'Please choose both a date and a time.';
+      if (step === 2 && $('date').value < $('date').min) return 'Please choose today or a future date.';
+      return '';
+    }
+    $('nextBtn').addEventListener('click', () => {
+      if (step < 4) {
+        const err = validateCurrent();
+        if (err) { $('error').textContent = err; return; }
+        showStep(step + 1);
+      } else {
+        renderSummary($('finalSummary'));
+        $('endingName').textContent = fields.Name() !== 'Not provided' ? ', ' + fields.Name() : '';
+        wizard.classList.add('hidden'); finished.classList.remove('hidden');
+        finished.scrollIntoView({behavior:'smooth', block:'start'});
+      }
+    });
+    $('backBtn').addEventListener('click', () => { if (step > 0) showStep(step - 1); });
+    $('restartBtn').addEventListener('click', () => {
+      finished.classList.add('hidden'); welcome.classList.remove('hidden');
+      noBtn.removeAttribute('style');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  </script>
 </body>
-
 </html>
